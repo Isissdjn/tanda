@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanda</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/first.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=DynaPuff:wght@400..700&family=Londrina+Sketch&family=Sunflower&display=swap" rel="stylesheet">
+</head>
+<body>
+<h1 class="texte">TANDA</h1>
+<nav class="nav">
+    <input id="menu" type="checkbox">
+    <label for="menu">Menu</label>
+    <ul class="menu">
+      <li>
+        <a href="/learn">
+          <span>Apprendre</span>
+          <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/connect">
+          <span>Lsf en Fr</span>
+          <i class="fa fa-exchange" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li>
+        <a href="/translate">
+          <span>Fr en Lsf</span>
+          <i class="fa fa-exchange" aria-hidden="true"></i>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.elix-lsf.fr">
+          <span>Dictionnaire</span>
+          <i class="fa fa-leanpub" aria-hidden="true"></i>
+        </a>
+      </li>
+    </ul>
+</nav>
+
+</body>
+</html>

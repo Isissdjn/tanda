@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANDA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=DynaPuff:wght@400..700&family=Londrina+Sketch&family=Sunflower&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header-outer">
+        <nav class="header-navigation">
+            <a href="/"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+        </nav>
+        <div class="header-inner responsive-wrapper">
+            <div class="header-logo">
+                <h3 class="texte">TANDA</h3>
+            </div>    
+        </div>
+    </header>
+    <div class="contain">
+        <p class="Bluetooth"><i class="fa fa-exclamation-circle" aria-hidden="true"></i></p>
+        <p>Ce module du site est encore en plein développement.<br>Merci pour votre compréhension</p>
+        <button id="connectButton">Me Prévenir</button>
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <!-- Boîte modale -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Renseigner mon email</h2>
+            <form id="emailForm" method="POST" action="{{ url_for('submit_email') }}">
+                <label for="email">Adresse e-mail:</label>
+                <input type="email" id="email" name="email" required>
+                <button type="submit" >Envoyer</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+      // Afficher la boîte modale
+document.getElementById('connectButton').onclick = function() {
+    document.getElementById('emailModal').style.display = 'block';
+};
+
+// Fermer la boîte modale
+document.querySelector('.close').onclick = function() {
+    document.getElementById('emailModal').style.display = 'none';
+};
+
+window.onclick = function(event) {
+    if (event.target === document.getElementById('emailModal')) {
+        document.getElementById('emailModal').style.display = 'none';
+    }
+};
+
+// Soumission du formulaire avec AJAX pour afficher le toast
+$(document).ready(function() {
+    $('#emailForm').submit(function(event) {
+        event.preventDefault(); // Empêcher la soumission par défaut du formulaire
+
+        const formData = $(this).serialize();
+        $.ajax({
+            type: 'POST',
+            url: '{{ url_for("submit_email") }}',
+            data: formData,
+            success: function(response) {
+                // Afficher le toast avec le message de réponse
+                const toast = document.getElementById('toast');
+                toast.textContent = response.status;
+                toast.style.display = 'block';
+
+                // Cacher le toast après 3 secondes
+                setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 3000);
+
+                // Fermer la modale après l'envoi
+                document.getElementById('emailModal').style.display = 'none';
+            },
+            error: function() {
+                // En cas d'erreur, afficher un message d'erreur dans le toast
+                const toast = document.getElementById('toast');
+                toast.textContent = 'Une erreur s\'est produite lors de l\'enregistrement.';
+                toast.style.display = 'block';
+                setTimeout(function() {
+                    toast.style.display = 'none';
+                }, 3000);
+            }
+        });
+    });
+});
+
+    </script>
+
+</body>
+</html>
+

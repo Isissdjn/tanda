@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANDA</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome-4.7.0/css/font-awesome.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Danfo&family=DynaPuff:wght@400..700&family=Londrina+Sketch&family=Sunflower&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header-outer">
+        
+        <nav class="header-navigation">
+         <a href="/"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+        </nav>
+        <div class="header-inner responsive-wrapper">
+            <div class="header-logo">
+                <h3 class="texte">TANDA</h3>
+            </div>    
+        </div>
+    </header>
+    <h1>Lsf en Fr</h1>
+     <div class="bouton">
+         <button id="record_button">
+          <i class="fa fa-microphone" aria-hidden="true"></i>
+        </button>
+
+        <br><br>
+
+       
+        <button id="show_text_input" >
+          <i class="fa fa-keyboard-o" aria-hidden="true"></i>
+        </button>
+    </div>
+    
+   
+
+    
+    <div id="text_input_container">
+        <input type="text" id="text_input" name="text_input" placeholder="Entrez un mot ou une phrase">
+        <button id="submit_text_button" >
+            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+        </button>
+    </div>
+
+  
+    <p id="transcription"></p>
+
+    <p class="translation"> <i class="fa fa-exchange" aria-hidden="true"></i></p>
+
+    <video id="videoPlayer" controls style="margin-top: 20px;">
+        <source id="videoSource" src="" type="video/webm">
+        Votre navigateur ne supporte pas la lecture vidéo.
+    </video>
+
+    <script>
+        $(document).ready(function() {
+            var videoQueue = [];
+            var isRecording = false;
+            let recognition;
+
+          
+            function addVideosToQueue(videos) {
+                videoQueue = videoQueue.concat(videos);
+                if (videoQueue.length > 0) {
+                    playNextVideo();
+                }
+            }
+
+         
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.lang = 'fr-FR';
+                recognition.continuous = false;
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    console.log("Texte reconnu : ", transcript);
+                    $('#transcription').text(transcript);
+                    sendToBackend(transcript);
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Erreur de reconnaissance vocale:', event.error);
+                };
+            } else {
+                alert('La reconnaissance vocale n’est pas prise en charge par votre navigateur.');
+            }
+
+           
+            $('#record_button').mousedown(function() {
+                if (recognition && !isRecording) {
+                    recognition.start();
+                    isRecording = true;
+                    console.log("Enregistrement démarré");
+                }
+            }).mouseup(function() {
+                if (recognition && isRecording) {
+                    recognition.stop();
+                    isRecording = false;
+                    console.log("Enregistrement arrêté");
+                }
+            });
+
+           
+            $('#show_text_input').click(function() {
+                $('#text_input_container').toggle();
+            });
+
+         
+            $('#submit_text_button').click(function() {
+                var text = $('#text_input').val();
+                if (text) {
+                    $('#transcription').text(text);
+                    sendToBackend(text);
+                }
+            });
+
+            function sendToBackend(transcript) {
+                $.post("/submit_text", { text: transcript }, function(data) {
+                    if (data.videos && data.videos.length > 0) {
+                        console.log("Vidéos correspondantes : ", data.videos);
+                        addVideosToQueue(data.videos);
+                    } else {
+                        console.log("Aucune correspondance trouvée.");
+                    }
+                });
+            }
+
+      
+            function playVideo(videoName) {
+                $.ajax({
+                    url: '/play_video',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ video_name: videoName }),
+                    success: function(data) {
+                        const videoPlayer = document.getElementById('videoPlayer');
+                        const videoSource = document.getElementById('videoSource');
+                        if (data.video_path) {
+                            videoSource.src = data.video_path;
+                            videoPlayer.load();
+                            videoPlayer.play();
+                        } else {
+                            console.log("Erreur: " + data.video_path);
+                        }
+                    },
+                    error: function(error) {
+                        console.error('Erreur lors de la récupération de la vidéo:', error);
+                    }
+                });
+            }
+
+            
+            function playNextVideo() {
+                if (videoQueue.length > 0) {
+                    const nextVideo = videoQueue.shift();
+                    playVideo(nextVideo);
+                }
+            }
+
+            
+            document.getElementById('videoPlayer').addEventListener('ended', function () {
+                playNextVideo();
+            });
+        });
+    </script>
+</body>
+</html>

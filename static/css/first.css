@@ -1,0 +1,228 @@
+:root {
+  --white: #ffffff;
+  --violet: #655be1;
+  --dark-violet: #5146e1;
+  --black: #21232a;
+}
+
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  text-align: center;
+  padding: 0 20px;
+  background-image: url('/static/image/fond.jpg');
+  background-size: cover; 
+  background-position:center; 
+  background-attachment: fixed; 
+  background-repeat: no-repeat; 
+  color: var(--white);
+}
+
+
+.notification {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+  background: var(--violet);
+}
+
+.nav {
+  position: fixed;
+  bottom: 70px; 
+  left: 50%;
+  transform: translateX(-50%); 
+  display: flex;
+  justify-content: center;
+  width: 300px; 
+  z-index: 1000; 
+}
+
+.nav [type="checkbox"] {
+  position: absolute;
+}
+
+.nav [type="checkbox"] + label {
+  width: 75px;
+  height: 75px;
+  background: var(--violet);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 1;
+  transform: translateY(-50%);
+  animation: float 2s infinite ease-in-out; 
+}
+/* Animation flottante */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateY(-55%);
+  }
+}
+
+.nav [type="checkbox"] + label:hover {
+  background: var(--dark-violet);
+}
+
+.menu li {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: all 0.4s;
+}
+
+.menu li:nth-child(1) {
+  transition-delay: 0.2s;
+}
+
+.menu li:nth-child(2) {
+  transition-delay: 0.15s;
+}
+
+.menu li:nth-child(3) {
+  transition-delay: 0.1s;
+}
+
+.menu li:nth-child(4) {
+  transition-delay: 0.05s;
+}
+
+.menu li a {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--violet);
+}
+
+.menu li a span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(calc(-100% - 5px));
+  width: 100%;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+  color: var(--black);
+  font-weight: bold;
+}
+
+.nav input:checked + label {
+  background: var(--black);
+  transform: translateY(calc(-50% + 4px));
+}
+
+.nav input:checked ~ .menu li:nth-child(1) {
+  top: -210px;
+  transition-delay: 0.1s;
+}
+
+.nav input:checked ~ .menu li:nth-child(2) {
+  top: -160px;
+  left: calc(50% - 75px);
+  transition-delay: 0.2s;
+}
+
+.nav input:checked ~ .menu li:nth-child(3) {
+  top: -160px;
+  left: calc(50% + 75px);
+  transition-delay: 0.3s;
+}
+
+.nav input:checked ~ .menu li:nth-child(4) {
+  top: -110px;
+  transition-delay: 0.4s;
+}
+
+.nav input:checked ~ .menu li a span {
+  opacity: 1;
+  transition-delay: 0.9s;
+}
+
+
+@media (max-width: 768px) {
+
+  .nav [type="checkbox"] + label {
+      width: 70px;
+      height: 70px;
+      font-size: 22px;
+  }
+
+  .menu li a {
+      width: 50px;
+      height: 50px;
+  }
+
+  .menu li a span {
+      font-size: 16px;
+  }
+
+  /* Espacement entre les éléments du menu sur petits écrans */
+  .nav input:checked ~ .menu li:nth-child(1) {
+      top: -240px; /* Plus d'espace entre les éléments */
+  }
+
+  .nav input:checked ~ .menu li:nth-child(2) {
+      top: -180px;
+      left: calc(50% - 85px); /* Ajustement de la position */
+  }
+
+  .nav input:checked ~ .menu li:nth-child(3) {
+      top: -180px;
+      left: calc(50% + 85px);
+  }
+
+  .nav input:checked ~ .menu li:nth-child(4) {
+      top: -120px;
+  }
+}
+.texte {
+  color: #21232a;
+  margin-top: 20%; 
+  font-size: 60px;
+  font-family: "DynaPuff", system-ui;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "wdth" 100;
+}
+
+/* For larger screens (desktops, laptops) */
+@media (min-width: 1024px) {
+  .texte {
+    font-size: 80px; 
+    margin-top: 15%; 
+  }
+}
+
+/* For smaller screens (mobile) */
+@media (max-width: 768px) {
+  .texte {
+    font-size: 60px; /* Smaller font size for mobile */
+    margin-top: 105%; /* Increase top margin for small screens */
+  }
+}
